@@ -3,22 +3,21 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border/10 bg-background">
-      <div className="container py-12">
+    <footer className="border-t border-border bg-card">
+      <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">MeshCards</span>
+            <span className="font-bold text-lg">AnkiGen</span>
           </Link>
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="mailto:contact@meshcards.com" className="hover:text-foreground transition-colors">Contact</a>
+            <Link to="/studio" className="hover:text-foreground transition-colors">Studio</Link>
+            <Link to="/feedback" className="hover:text-foreground transition-colors">Feedback</Link>
           </div>
 
           {/* Social */}
@@ -51,9 +50,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="text-center mt-8 pt-6 border-t border-border/10">
+        <div className="text-center mt-8 pt-6 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} MeshCards. Made with ❤️ for learners everywhere.
+            © {new Date().getFullYear()} AnkiGen. Free during early access.
           </p>
         </div>
       </div>

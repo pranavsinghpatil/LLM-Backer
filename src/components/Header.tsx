@@ -1,99 +1,96 @@
 import { useState } from "react";
-import { Menu, X, LogOut, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X, Sparkles, Palette } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTheme, themes } from "@/hooks/useTheme";
 
-interface HeaderProps {
-  user?: { email: string; avatar_url?: string } | null;
-  onSignIn?: () => void;
-  onSignOut?: () => void;
-}
-
-const Header = ({ user, onSignIn, onSignOut }: HeaderProps) => {
+const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/10">
-      <div className="container flex items-center justify-between h-16">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <span>Mesh<span className="text-primary">Cards</span></span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Features
-          </a>
-          <a href="#who" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Who's it for
-          </a>
-          <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Pricing
-          </a>
-        </nav>
-
-        {/* Auth */}
-        <div className="hidden md:flex items-center gap-3">
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link to="/studio">
-                <Button className="bg-foreground text-background hover:bg-foreground/90">
-                  Open Studio
-                </Button>
-              </Link>
-              <span className="text-sm text-muted-foreground">{user.email}</span>
-              <Button variant="ghost" size="sm" onClick={onSignOut}>
-                <LogOut className="w-4 h-4" />
-              </Button>
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-          ) : (
-            <Button onClick={onSignIn} className="bg-foreground text-background hover:bg-foreground/90">
-              Sign in
-            </Button>
-          )}
-        </div>
+            <span>Anki<span className="text-primary">Gen</span></span>
+          </Link>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden p-2"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-background border-b border-border/10">
-          <nav className="container py-4 flex flex-col gap-4">
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
-              Features
-            </a>
-            <a href="#who" className="text-muted-foreground hover:text-foreground transition-colors">
-              Who's it for
-            </a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-              Pricing
-            </a>
-            {user ? (
-              <>
-                <Link to="/studio">
-                  <Button className="w-full bg-foreground text-background">Open Studio</Button>
-                </Link>
-                <Button variant="ghost" onClick={onSignOut} className="justify-start">
-                  <LogOut className="w-4 h-4 mr-2" /> Sign out
-                </Button>
-              </>
-            ) : (
-              <Button onClick={onSignIn} className="bg-foreground text-background">Sign in</Button>
-            )}
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <Link to="/studio" className="text-muted-foreground hover:text-foreground transition-colors">
+              Studio
+            </Link>
+            <Link to="/feedback" className="text-muted-foreground hover:text-foreground transition-colors">
+              Feedback
+            </Link>
           </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            {/* Theme Switcher */}
+            <div className="relative group">
+              <button className="btn-ghost p-2" title="Change theme">
+                <Palette className="w-5 h-5" />
+              </button>
+              <div className="absolute right-0 top-full mt-2 bg-card border border-border rounded-lg shadow-lg p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[140px]">
+                {themes.map((t) => (
+                  <button
+                    key={t.name}
+                    onClick={() => setTheme(t.name)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                      theme === t.name ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                    }`}
+                  >
+                    <span
+                      className="w-4 h-4 rounded-full border border-border"
+                      style={{ backgroundColor: t.color }}
+                    />
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Link to="/studio" className="hidden md:flex btn-primary text-sm py-2">
+              Open Studio
+            </Link>
+
+            <button
+              className="md:hidden btn-ghost p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
-      )}
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border animate-fade-in">
+            <nav className="flex flex-col gap-2">
+              <Link to="/" className="px-4 py-2 hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                Home
+              </Link>
+              <Link to="/studio" className="px-4 py-2 hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                Studio
+              </Link>
+              <Link to="/feedback" className="px-4 py-2 hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                Feedback
+              </Link>
+              <Link to="/studio" className="btn-primary mx-4 mt-2" onClick={() => setMobileMenuOpen(false)}>
+                Open Studio
+              </Link>
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
