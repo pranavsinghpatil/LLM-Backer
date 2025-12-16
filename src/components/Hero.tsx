@@ -1,120 +1,117 @@
-import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap } from "lucide-react";
+import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-// Sparkle decoration component matching gitingest style
-const SparkleDecor = ({ className, color = "primary" }: { className?: string; color?: "primary" | "accent" | "red" | "green" }) => {
-  const colors = {
-    primary: "text-primary",
-    accent: "text-accent", 
-    red: "text-red-400",
-    green: "text-green-400"
-  };
-  return (
-    <svg className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-    </svg>
-  );
-};
-
 const Hero = () => {
   return (
-    <div className="pt-24 pb-16">
-      {/* Hero Section */}
-      <section className="container relative">
-        <div className="max-w-3xl mx-auto text-center py-12 md:py-20 relative">
-          {/* Decorative sparkles like gitingest */}
-          <SparkleDecor className="absolute -top-4 left-0 md:left-20 w-8 h-8 hidden md:block" color="red" />
-          <SparkleDecor className="absolute top-8 left-8 md:left-32 w-4 h-4 hidden md:block" color="green" />
-          <SparkleDecor className="absolute top-0 right-0 md:right-16 w-6 h-6 hidden md:block" color="green" />
-          <SparkleDecor className="absolute top-12 right-4 md:right-24 w-3 h-3 hidden md:block" color="primary" />
-          
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            <span className="text-primary">AI-Powered</span>
-            <br />Flashcard Generator
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto font-body">
-            Turn any PDF, notes, or text into Anki-ready flashcards.
-            <br className="hidden sm:block" />
-            This is useful for studying smarter, not harder.
-          </p>
-        </div>
-
-        {/* Main Card - gitingest style */}
-        <div className="max-w-3xl mx-auto relative">
-          {/* Decorative sparkle */}
-          <SparkleDecor className="absolute -bottom-8 -left-8 w-12 h-12 hidden md:block" color="green" />
-          
-          <div className="bg-secondary/80 rounded-2xl border-2 border-foreground p-6 md:p-8 shadow-[4px_4px_0_0_hsl(var(--foreground))]">
-            {/* Input row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
-              <input 
-                type="text" 
-                placeholder="Paste your notes or drop a PDF..."
-                className="flex-1 bg-accent/30 border-2 border-foreground rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-muted-foreground"
-                readOnly
-              />
-              <Link to="/studio">
-                <Button className="bg-foreground text-background hover:bg-foreground/90 px-6 py-3 rounded-lg font-medium w-full sm:w-auto">
-                  Generate
-                </Button>
-              </Link>
-            </div>
-            
-            {/* Controls row */}
-            <div className="flex flex-wrap items-center gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <select className="bg-background border-2 border-foreground rounded-md px-3 py-1.5 text-sm font-medium cursor-pointer focus:outline-none">
-                  <option>GPT-4</option>
-                  <option>Claude</option>
-                </select>
-                <input 
-                  type="text" 
-                  placeholder="Focus: definitions, concepts..."
-                  className="bg-background border-2 border-foreground rounded-md px-3 py-1.5 text-sm w-40 focus:outline-none"
-                />
-              </div>
+    <div className="pt-20">
+      {/* Hero Section - Leapcell style with yellow/primary bg */}
+      <section className="bg-primary min-h-[70vh] relative overflow-hidden">
+        <div className="container py-16 md:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Text Content */}
+            <div className="relative z-10">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1] text-primary-foreground">
+                Turn Anything into
+                <br />
+                <span className="relative inline-block">
+                  Flashcards
+                  <Sparkles className="absolute -top-2 -right-6 w-6 h-6 text-primary-foreground/80" />
+                </span>
+                <br />
+                <span className="text-foreground">Anki Decks</span>
+              </h1>
               
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Cards:</span>
-                <span className="font-bold">10</span>
-                <input type="range" min="5" max="50" defaultValue="10" className="w-24 accent-primary" />
-              </div>
+              <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 max-w-lg leading-relaxed">
+                Upload PDFs, paste notes, or drop any text. AI generates high-quality flashcards so you can study smarter, not harder.
+              </p>
               
-              <div className="flex items-center gap-2 ml-auto">
-                <input type="checkbox" id="advanced" className="w-4 h-4 accent-primary border-2 border-foreground rounded" />
-                <label htmlFor="advanced" className="text-sm font-medium flex items-center gap-1">
-                  Advanced
-                  <span className="badge-new text-[10px] px-1.5 py-0.5">NEW</span>
-                </label>
-              </div>
-            </div>
-            
-            {/* Example tags */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-muted-foreground">Try these:</span>
-              {["Biology Notes", "Medical Terms", "History Chapter", "Law Cases", "Vocab List"].map((item) => (
-                <Link to="/studio" key={item}>
-                  <button className="px-3 py-1.5 rounded-full border-2 border-foreground/30 text-sm font-medium hover:bg-foreground hover:text-background transition-colors">
-                    {item}
-                  </button>
+              <div className="flex flex-wrap gap-4">
+                <Link to="/studio">
+                  <Button className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-lg rounded-xl font-semibold shadow-lg">
+                    Get Started Free
+                  </Button>
                 </Link>
-              ))}
+                <a href="#features">
+                  <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10 px-6 py-6 text-lg rounded-xl font-medium">
+                    See how it works <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </a>
+              </div>
+            </div>
+
+            {/* Right: Preview Card - Leapcell style */}
+            <div className="relative hidden lg:block">
+              {/* Stacked cards effect */}
+              <div className="absolute top-4 left-4 w-full h-full bg-primary-foreground/20 rounded-2xl transform rotate-2" />
+              <div className="absolute top-2 left-2 w-full h-full bg-primary-foreground/30 rounded-2xl transform rotate-1" />
+              
+              {/* Main preview card */}
+              <div className="relative bg-card rounded-2xl border-2 border-foreground shadow-2xl overflow-hidden">
+                {/* Window header */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-muted border-b-2 border-foreground">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground ml-2">ankigen.app</span>
+                </div>
+                
+                {/* Card content */}
+                <div className="p-6 space-y-4">
+                  {/* Service indicator */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                        <Brain className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Flashcard Deck</p>
+                        <p className="font-semibold text-sm">biology-chapter-5</p>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                      Ready
+                    </span>
+                  </div>
+                  
+                  {/* Stats row */}
+                  <div className="bg-muted rounded-xl p-4 border border-border">
+                    <p className="text-xs text-muted-foreground mb-2">Generated Cards</p>
+                    <div className="flex items-end gap-1">
+                      {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
+                        <div 
+                          key={i} 
+                          className="w-4 bg-primary/60 rounded-sm" 
+                          style={{ height: `${h * 0.4}px` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Sample flashcard */}
+                  <div className="bg-background rounded-xl border-2 border-foreground/20 p-4">
+                    <p className="text-xs font-bold text-primary mb-1">Q1</p>
+                    <p className="text-sm font-medium mb-2">What is mitochondria?</p>
+                    <p className="text-xs text-muted-foreground">The powerhouse of the cell...</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          {/* Tip below card */}
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            Supports PDF, TXT, DOCX • Max 50MB • Export to .apkg
-          </p>
         </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Features Section */}
       <section id="features" className="container py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto font-body">
+          <p className="text-muted-foreground max-w-lg mx-auto">
             Three simple steps to transform your study materials
           </p>
         </div>
@@ -137,12 +134,12 @@ const Hero = () => {
               description: "Download as .apkg and import directly into Anki."
             }
           ].map((feature, index) => (
-            <div key={index} className="bg-secondary/50 border-2 border-foreground rounded-2xl p-6 shadow-[3px_3px_0_0_hsl(var(--foreground))] hover:-translate-y-1 transition-transform">
-              <div className="w-12 h-12 rounded-xl bg-background border-2 border-foreground flex items-center justify-center mb-4">
-                <feature.icon className="w-6 h-6" />
+            <div key={index} className="bg-card border-2 border-foreground rounded-2xl p-6 shadow-[3px_3px_0_0_hsl(var(--foreground))] hover:-translate-y-1 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border-2 border-foreground flex items-center justify-center mb-4">
+                <feature.icon className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground text-sm font-body">{feature.description}</p>
+              <p className="text-muted-foreground text-sm">{feature.description}</p>
             </div>
           ))}
         </div>
@@ -152,7 +149,7 @@ const Hero = () => {
       <section id="who" className="container py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Built for Learners</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto font-body">
+          <p className="text-muted-foreground max-w-lg mx-auto">
             Perfect for anyone using spaced repetition to learn
           </p>
         </div>
@@ -167,7 +164,7 @@ const Hero = () => {
             <div key={index} className="p-5 rounded-xl border-2 border-foreground/20 hover:border-foreground transition-colors bg-card">
               <item.icon className="w-8 h-8 text-primary mb-3" />
               <h3 className="font-bold mb-1">{item.title}</h3>
-              <p className="text-xs text-muted-foreground font-body">{item.description}</p>
+              <p className="text-xs text-muted-foreground">{item.description}</p>
             </div>
           ))}
         </div>
@@ -176,23 +173,20 @@ const Hero = () => {
       {/* Pricing Section */}
       <section id="pricing" className="container py-24">
         <div className="max-w-xl mx-auto text-center">
-          <div className="bg-secondary/80 border-2 border-foreground rounded-2xl p-8 md:p-12 shadow-[4px_4px_0_0_hsl(var(--foreground))] relative">
-            <SparkleDecor className="absolute -top-4 -left-4 w-8 h-8" color="red" />
-            <SparkleDecor className="absolute -bottom-4 -right-4 w-6 h-6" color="green" />
-            
-            <div className="inline-flex items-center gap-2 bg-foreground text-background px-3 py-1 rounded-full text-sm font-bold mb-6">
+          <div className="bg-card border-2 border-foreground rounded-2xl p-8 md:p-12 shadow-[4px_4px_0_0_hsl(var(--foreground))] relative">
+            <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold mb-6">
               <Zap className="w-4 h-4" />
-              Coming Soon
+              Early Access
             </div>
             
-            <h2 className="text-3xl font-bold mb-4">Pricing</h2>
-            <p className="text-muted-foreground mb-6 font-body text-sm">
+            <h2 className="text-3xl font-bold mb-4">Free to Use</h2>
+            <p className="text-muted-foreground mb-6 text-sm">
               Free during early access. Support development if you find it useful!
             </p>
             
-            <div className="bg-background border-2 border-foreground rounded-xl p-6 mb-6">
+            <div className="bg-muted rounded-xl p-6 mb-6">
               <div className="text-4xl font-bold text-primary mb-1">$0</div>
-              <p className="text-sm text-muted-foreground">Early Access</p>
+              <p className="text-sm text-muted-foreground">No credit card required</p>
             </div>
             
             <a 
