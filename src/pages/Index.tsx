@@ -1,12 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import Footer from "@/components/Footer";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const [user, setUser] = useState<{ email: string; avatar_url?: string } | null>(null);
+
+  const handleSignIn = () => {
+    // Placeholder for Supabase Google auth
+    toast({
+      title: "Sign In",
+      description: "Google authentication will be configured with Supabase",
+    });
+  };
+
+  const handleSignOut = () => {
+    setUser(null);
+    toast({
+      title: "Signed out",
+      description: "You have been signed out successfully",
+    });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Header user={user} onSignIn={handleSignIn} onSignOut={handleSignOut} />
+      <Hero user={user} onSignIn={handleSignIn} />
+      <Footer />
     </div>
   );
 };
