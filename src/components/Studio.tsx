@@ -1,8 +1,25 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, FileText, X, Sparkles, Download, RefreshCw, ChevronDown, ChevronLeft, Settings, Layers } from "lucide-react";
+import { Upload, FileText, X, Download, RefreshCw, ChevronDown, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import Header from "./Header";
+import Footer from "./Footer";
+
+// Sparkle decoration component
+const SparkleDecor = ({ className, color = "primary" }: { className?: string; color?: "primary" | "accent" | "red" | "green" }) => {
+  const colors = {
+    primary: "text-primary",
+    accent: "text-accent", 
+    red: "text-red-400",
+    green: "text-green-400"
+  };
+  return (
+    <svg className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+    </svg>
+  );
+};
 
 interface GeneratedCard {
   id: string;
@@ -17,8 +34,9 @@ const Studio = () => {
   const [generatedCards, setGeneratedCards] = useState<GeneratedCard[]>([]);
   const [cardCount, setCardCount] = useState(10);
   const [aiModel, setAiModel] = useState("gpt-4");
-  const [focusArea, setFocusArea] = useState("balanced");
+  const [focusArea, setFocusArea] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +53,7 @@ const Studio = () => {
         return;
       }
       setUploadedFile(file);
-      toast({
-        title: "File uploaded",
-        description: `${file.name} is ready for processing.`,
-      });
+      toast({ title: "File uploaded", description: `${file.name} ready.` });
     }
   };
 
@@ -58,10 +73,7 @@ const Studio = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setUploadedFile(file);
-      toast({
-        title: "File uploaded",
-        description: `${file.name} is ready for processing.`,
-      });
+      toast({ title: "File uploaded", description: `${file.name} ready.` });
     }
   }, []);
 
@@ -80,27 +92,26 @@ const Studio = () => {
     
     const mockCards: GeneratedCard[] = Array.from({ length: cardCount }, (_, i) => ({
       id: `card-${i + 1}`,
-      front: `Sample Question ${i + 1}: What is the key concept from your ${uploadedFile ? "document" : "notes"}?`,
-      back: `This is the answer to question ${i + 1}. In a real implementation, AI would generate meaningful Q&A pairs based on your content.`,
+      front: `Question ${i + 1}: What is the key concept from your ${uploadedFile ? "document" : "notes"}?`,
+      back: `Answer ${i + 1}: This is a sample answer. Real AI would generate meaningful Q&A pairs from your content.`,
     }));
 
     setGeneratedCards(mockCards);
     setIsGenerating(false);
-    
-    toast({
-      title: "Cards generated!",
-      description: `${mockCards.length} flashcards created successfully.`,
-    });
+    toast({ title: "Done!", description: `${mockCards.length} cards generated.` });
   };
 
   const handleExport = () => {
-    toast({
-      title: "Export started",
-      description: "Your Anki deck will download shortly.",
-    });
+    toast({ title: "Exporting...", description: "Your .apkg file will download shortly." });
   };
 
-  const clearContent = () => {
+  const copyCard = (card: GeneratedCard) => {
+    navigator.clipboard.writeText(`Q: ${card.front}\nA: ${card.back}`);
+    setCopiedId(card.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const clearAll = () => {
     setText("");
     setUploadedFile(null);
     setGeneratedCards([]);
@@ -109,53 +120,44 @@ const Studio = () => {
   const hasContent = text.length > 0 || uploadedFile !== null;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background border-b border-border">
-        <div className="max-w-screen-xl mx-auto px-6 flex items-center justify-between h-14">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm">Back</span>
-            </Link>
-            <div className="w-px h-5 bg-border" />
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-semibold text-sm">MeshCards Studio</span>
-            </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      
+      <main className="flex-1 pt-24 pb-16">
+        <div className="container">
+          {/* Title */}
+          <div className="max-w-3xl mx-auto text-center mb-8 relative">
+            <SparkleDecor className="absolute -top-2 left-10 w-6 h-6 hidden md:block" color="red" />
+            <SparkleDecor className="absolute top-0 right-16 w-4 h-4 hidden md:block" color="green" />
+            
+            <h1 className="text-3xl md:text-5xl font-bold mb-3">
+              Flashcard <span className="text-primary">Studio</span>
+            </h1>
+            <p className="text-muted-foreground font-body">
+              Paste your content below and let AI generate study cards
+            </p>
           </div>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-screen-xl mx-auto px-6 py-8">
-        <div className="flex gap-6 h-[calc(100vh-8rem)]">
-          {/* Left Panel - Input */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="w-4 h-4 text-primary" />
-              <h2 className="font-semibold">Input</h2>
-            </div>
-
-            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-              {/* File Upload Area */}
+          {/* Main Input Card - gitingest style */}
+          <div className="max-w-3xl mx-auto relative mb-8">
+            <SparkleDecor className="absolute -bottom-6 -left-6 w-10 h-10 hidden md:block" color="green" />
+            
+            <div className="bg-secondary/80 rounded-2xl border-2 border-foreground p-6 shadow-[4px_4px_0_0_hsl(var(--foreground))]">
+              {/* File Upload / Text Input Area */}
               <div
                 className={`
-                  relative rounded-xl border-2 border-dashed transition-all cursor-pointer
-                  ${isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}
+                  relative rounded-xl border-2 border-dashed transition-all mb-4
+                  ${isDragging ? "border-primary bg-primary/10" : "border-foreground/30"}
                   ${uploadedFile ? "border-primary bg-primary/5" : ""}
                 `}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                onClick={() => !uploadedFile && fileInputRef.current?.click()}
               >
                 {uploadedFile ? (
                   <div className="p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-primary/20 border-2 border-foreground flex items-center justify-center">
                         <FileText className="w-5 h-5 text-primary" />
                       </div>
                       <div>
@@ -166,19 +168,22 @@ const Studio = () => {
                       </div>
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}
-                      className="p-1.5 hover:bg-muted rounded-md transition-colors"
+                      onClick={() => setUploadedFile(null)}
+                      className="p-2 hover:bg-foreground/10 rounded-lg transition-colors"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  <div className="p-8 text-center">
-                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3">
-                      <Upload className="w-6 h-6 text-muted-foreground" />
+                  <div 
+                    className="p-6 text-center cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-background border-2 border-foreground flex items-center justify-center mx-auto mb-3">
+                      <Upload className="w-5 h-5" />
                     </div>
-                    <p className="font-medium text-sm mb-1">Drop your file here</p>
-                    <p className="text-xs text-muted-foreground">PDF, TXT, or DOCX • Max 50MB</p>
+                    <p className="font-medium text-sm mb-1">Drop your file here or click to upload</p>
+                    <p className="text-xs text-muted-foreground">PDF, TXT, DOCX • Max 50MB</p>
                   </div>
                 )}
                 <input
@@ -191,166 +196,164 @@ const Studio = () => {
               </div>
 
               {/* Divider */}
-              <div className="flex items-center gap-3 px-2">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-xs text-muted-foreground">or paste text</span>
-                <div className="flex-1 h-px bg-border" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 h-px bg-foreground/20" />
+                <span className="text-xs font-medium text-muted-foreground">or paste text</span>
+                <div className="flex-1 h-px bg-foreground/20" />
               </div>
 
               {/* Text Area */}
-              <div className="flex-1 min-h-0">
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="Paste your notes, lecture content, or any text you want to convert into flashcards..."
-                  className="w-full h-full resize-none rounded-xl border border-border bg-card p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                />
-              </div>
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Paste your notes, lecture content, or any text here..."
+                className="w-full h-40 resize-none rounded-xl border-2 border-foreground bg-background p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all mb-4"
+              />
 
-              {/* Character count */}
-              <div className="text-xs text-muted-foreground text-right">
-                {text.length} characters
-              </div>
-            </div>
-          </div>
-
-          {/* Right Panel - Config & Output */}
-          <div className="w-80 flex-shrink-0 flex flex-col gap-4">
-            {/* Config Section */}
-            <div className="rounded-xl border border-border bg-card p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Settings className="w-4 h-4 text-primary" />
-                <h2 className="font-semibold text-sm">Configuration</h2>
-              </div>
-
-              <div className="space-y-4">
-                {/* AI Model */}
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">AI Model</label>
-                  <div className="relative">
-                    <select
-                      value={aiModel}
-                      onChange={(e) => setAiModel(e.target.value)}
-                      className="w-full h-9 rounded-lg border border-border bg-background px-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    >
-                      <option value="gpt-4">GPT-4 (Best)</option>
-                      <option value="gpt-3.5">GPT-3.5 (Fast)</option>
-                      <option value="claude">Claude</option>
-                    </select>
-                    <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  </div>
+              {/* Controls Row */}
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                {/* Model Select */}
+                <div className="relative">
+                  <select
+                    value={aiModel}
+                    onChange={(e) => setAiModel(e.target.value)}
+                    className="appearance-none bg-background border-2 border-foreground rounded-lg px-3 py-2 pr-8 text-sm font-medium cursor-pointer focus:outline-none"
+                  >
+                    <option value="gpt-4">GPT-4</option>
+                    <option value="gpt-3.5">GPT-3.5</option>
+                    <option value="claude">Claude</option>
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                 </div>
 
+                {/* Focus Input */}
+                <input
+                  type="text"
+                  value={focusArea}
+                  onChange={(e) => setFocusArea(e.target.value)}
+                  placeholder="Focus: definitions, concepts..."
+                  className="bg-background border-2 border-foreground rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+
                 {/* Card Count */}
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                    Cards: <span className="text-primary font-semibold">{cardCount}</span>
-                  </label>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Cards:</span>
+                  <span className="font-bold text-primary w-6">{cardCount}</span>
                   <input
                     type="range"
                     min="5"
                     max="50"
                     value={cardCount}
                     onChange={(e) => setCardCount(Number(e.target.value))}
-                    className="w-full accent-primary h-1.5"
+                    className="w-20 accent-primary"
                   />
-                  <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-                    <span>5</span>
-                    <span>50</span>
-                  </div>
                 </div>
 
-                {/* Focus Area */}
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Focus</label>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {["balanced", "definitions", "concepts", "details"].map((option) => (
-                      <button
-                        key={option}
-                        onClick={() => setFocusArea(option)}
-                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
-                          focusArea === option
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted hover:bg-muted/80 text-muted-foreground"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/* Character count */}
+                <span className="text-xs text-muted-foreground ml-auto">
+                  {text.length} chars
+                </span>
               </div>
 
-              {/* Generate Button */}
-              <Button
-                onClick={handleGenerate}
-                disabled={isGenerating || !hasContent}
-                className="w-full mt-5 h-10"
-              >
-                {isGenerating ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Generate Cards
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {/* Generated Cards Preview */}
-            {generatedCards.length > 0 && (
-              <div className="flex-1 rounded-xl border border-border bg-card p-5 overflow-hidden flex flex-col">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm">
-                    {generatedCards.length} Cards
-                  </h3>
-                  <button
-                    onClick={clearContent}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !hasContent}
+                  className="flex-1 bg-foreground text-background hover:bg-foreground/90 py-3 rounded-lg font-medium"
+                >
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    "Generate Cards"
+                  )}
+                </Button>
+                
+                {hasContent && (
+                  <Button
+                    onClick={clearAll}
+                    variant="outline"
+                    className="border-2 border-foreground rounded-lg px-4"
                   >
                     Clear
-                  </button>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Tip */}
+            <p className="text-center text-xs text-muted-foreground mt-3">
+              💡 Tip: More specific content = better flashcards
+            </p>
+          </div>
+
+          {/* Generated Cards Section */}
+          {generatedCards.length > 0 && (
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-secondary/80 rounded-2xl border-2 border-foreground p-6 shadow-[4px_4px_0_0_hsl(var(--foreground))]">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-lg">
+                    Generated Cards ({generatedCards.length})
+                  </h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const all = generatedCards.map(c => `Q: ${c.front}\nA: ${c.back}`).join("\n\n");
+                        navigator.clipboard.writeText(all);
+                        toast({ title: "Copied all cards!" });
+                      }}
+                      className="text-xs font-medium px-3 py-1.5 rounded-lg border-2 border-foreground/30 hover:bg-foreground hover:text-background transition-colors"
+                    >
+                      Copy All
+                    </button>
+                    <button
+                      onClick={handleExport}
+                      className="text-xs font-medium px-3 py-1.5 rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center gap-1"
+                    >
+                      <Download className="w-3 h-3" />
+                      Export .apkg
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto space-y-2 mb-4">
-                  {generatedCards.slice(0, 5).map((card, i) => (
-                    <div key={card.id} className="p-3 rounded-lg bg-muted/50 border border-border/50">
-                      <div className="text-[10px] font-medium text-primary uppercase mb-1">Q{i + 1}</div>
-                      <p className="text-xs line-clamp-2">{card.front}</p>
+                {/* Cards Grid */}
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                  {generatedCards.map((card, i) => (
+                    <div
+                      key={card.id}
+                      className="bg-background border-2 border-foreground rounded-xl p-4 hover:-translate-y-0.5 transition-transform"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-primary mb-1">Q{i + 1}</div>
+                          <p className="text-sm font-medium mb-2">{card.front}</p>
+                          <p className="text-sm text-muted-foreground">{card.back}</p>
+                        </div>
+                        <button
+                          onClick={() => copyCard(card)}
+                          className="p-2 hover:bg-foreground/10 rounded-lg transition-colors shrink-0"
+                        >
+                          {copiedId === card.id ? (
+                            <Check className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-muted-foreground" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   ))}
-                  {generatedCards.length > 5 && (
-                    <p className="text-xs text-center text-muted-foreground py-2">
-                      +{generatedCards.length - 5} more
-                    </p>
-                  )}
                 </div>
-
-                <Button onClick={handleExport} className="w-full h-9" variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export .apkg
-                </Button>
               </div>
-            )}
-
-            {/* Tips - only show when no cards */}
-            {generatedCards.length === 0 && (
-              <div className="rounded-xl border border-border bg-muted/30 p-4">
-                <p className="text-xs font-medium mb-2">💡 Tips</p>
-                <ul className="text-[11px] text-muted-foreground space-y-1">
-                  <li>• More specific content = better cards</li>
-                  <li>• Use "Definitions" for vocabulary</li>
-                  <li>• Longer docs may take more time</li>
-                </ul>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };
