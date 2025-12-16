@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, FileText, X, Sparkles, Download, RefreshCw, ChevronDown, Coffee, ChevronLeft } from "lucide-react";
+import { Upload, FileText, X, Sparkles, Download, RefreshCw, ChevronDown, ChevronLeft, Settings, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -76,8 +76,6 @@ const Studio = () => {
     }
 
     setIsGenerating(true);
-    
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     
     const mockCards: GeneratedCard[] = Array.from({ length: cardCount }, (_, i) => ({
@@ -96,7 +94,6 @@ const Studio = () => {
   };
 
   const handleExport = () => {
-    // TODO: Implement actual .apkg export
     toast({
       title: "Export started",
       description: "Your Anki deck will download shortly.",
@@ -109,249 +106,250 @@ const Studio = () => {
     setGeneratedCards([]);
   };
 
+  const hasContent = text.length > 0 || uploadedFile !== null;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/10">
-        <div className="container flex items-center justify-between h-16">
+      <header className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-screen-xl mx-auto px-6 flex items-center justify-between h-14">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-              <span className="text-sm font-medium">Back</span>
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm">Back</span>
             </Link>
-            <div className="h-6 w-px bg-border/20" />
+            <div className="w-px h-5 bg-border" />
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold">MeshCards Studio</span>
+              <span className="font-semibold text-sm">MeshCards Studio</span>
             </div>
           </div>
-          
-          <a
-            href="https://buymeacoffee.com/htclodkzgo"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FFDD00] text-black font-medium text-sm hover:bg-[#FFDD00]/90 transition-colors"
-          >
-            <Coffee className="w-4 h-4" />
-            Support
-          </a>
         </div>
       </header>
 
-      <main className="container py-8">
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-5 gap-6">
-          {/* Input Section - 3 columns */}
-          <div className="lg:col-span-3 space-y-4">
-            {/* File Upload */}
-            <div
-              className={`card-bordered p-8 transition-all cursor-pointer ${
-                isDragging ? "border-primary scale-[1.01]" : ""
-              } ${uploadedFile ? "border-primary" : ""}`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => !uploadedFile && fileInputRef.current?.click()}
-            >
-              {uploadedFile ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center">
-                      <FileText className="w-6 h-6 text-secondary-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{uploadedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {(uploadedFile.size / 1024).toFixed(1)} KB
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}>
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-4">
-                    <Upload className="w-8 h-8 text-secondary-foreground" />
-                  </div>
-                  <p className="font-medium mb-1">Drop your file here</p>
-                  <p className="text-sm text-muted-foreground mb-4">PDF, TXT, or DOCX up to 50MB</p>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    accept=".pdf,.txt,.docx"
-                    className="hidden"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                    className="border-2 border-foreground"
-                  >
-                    Browse Files
-                  </Button>
-                </div>
-              )}
+      {/* Main Content */}
+      <main className="max-w-screen-xl mx-auto px-6 py-8">
+        <div className="flex gap-6 h-[calc(100vh-8rem)]">
+          {/* Left Panel - Input */}
+          <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex items-center gap-2 mb-4">
+              <Layers className="w-4 h-4 text-primary" />
+              <h2 className="font-semibold">Input</h2>
             </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-px bg-border/20" />
-              <span className="text-sm text-muted-foreground">or paste text</span>
-              <div className="flex-1 h-px bg-border/20" />
-            </div>
+            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+              {/* File Upload Area */}
+              <div
+                className={`
+                  relative rounded-xl border-2 border-dashed transition-all cursor-pointer
+                  ${isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}
+                  ${uploadedFile ? "border-primary bg-primary/5" : ""}
+                `}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => !uploadedFile && fileInputRef.current?.click()}
+              >
+                {uploadedFile ? (
+                  <div className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{uploadedFile.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {(uploadedFile.size / 1024).toFixed(1)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}
+                      className="p-1.5 hover:bg-muted rounded-md transition-colors"
+                    >
+                      <X className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3">
+                      <Upload className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="font-medium text-sm mb-1">Drop your file here</p>
+                    <p className="text-xs text-muted-foreground">PDF, TXT, or DOCX • Max 50MB</p>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  accept=".pdf,.txt,.docx"
+                  className="hidden"
+                />
+              </div>
 
-            {/* Text Input */}
-            <div className="card-soft p-1">
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Paste your notes, lecture content, or any text you want to convert into flashcards..."
-                className="w-full h-64 bg-transparent resize-none p-4 focus:outline-none font-body text-sm"
-              />
+              {/* Divider */}
+              <div className="flex items-center gap-3 px-2">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground">or paste text</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+
+              {/* Text Area */}
+              <div className="flex-1 min-h-0">
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Paste your notes, lecture content, or any text you want to convert into flashcards..."
+                  className="w-full h-full resize-none rounded-xl border border-border bg-card p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                />
+              </div>
+
+              {/* Character count */}
+              <div className="text-xs text-muted-foreground text-right">
+                {text.length} characters
+              </div>
             </div>
           </div>
 
-          {/* Config Section - 2 columns */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="card-soft p-6 space-y-6">
-              <h3 className="font-bold text-lg">Configuration</h3>
-              
-              {/* AI Model */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">AI Model</label>
-                <div className="relative">
-                  <select
-                    value={aiModel}
-                    onChange={(e) => setAiModel(e.target.value)}
-                    className="w-full bg-secondary/50 border border-border/20 rounded-lg px-4 py-3 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="gpt-4">GPT-4 (Best quality)</option>
-                    <option value="gpt-3.5">GPT-3.5 (Faster)</option>
-                    <option value="claude">Claude (Balanced)</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-                </div>
+          {/* Right Panel - Config & Output */}
+          <div className="w-80 flex-shrink-0 flex flex-col gap-4">
+            {/* Config Section */}
+            <div className="rounded-xl border border-border bg-card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Settings className="w-4 h-4 text-primary" />
+                <h2 className="font-semibold text-sm">Configuration</h2>
               </div>
 
-              {/* Card Count */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">
-                  Number of Cards: <span className="text-primary">{cardCount}</span>
-                </label>
-                <input
-                  type="range"
-                  min="5"
-                  max="50"
-                  value={cardCount}
-                  onChange={(e) => setCardCount(Number(e.target.value))}
-                  className="w-full accent-primary"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>5</span>
-                  <span>50</span>
-                </div>
-              </div>
-
-              {/* Focus Area */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">Focus Area</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { value: "balanced", label: "Balanced" },
-                    { value: "definitions", label: "Definitions" },
-                    { value: "concepts", label: "Concepts" },
-                    { value: "details", label: "Details" },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setFocusArea(option.value)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        focusArea === option.value
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary/50 hover:bg-secondary"
-                      }`}
+              <div className="space-y-4">
+                {/* AI Model */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">AI Model</label>
+                  <div className="relative">
+                    <select
+                      value={aiModel}
+                      onChange={(e) => setAiModel(e.target.value)}
+                      className="w-full h-9 rounded-lg border border-border bg-background px-3 text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
                     >
-                      {option.label}
-                    </button>
-                  ))}
+                      <option value="gpt-4">GPT-4 (Best)</option>
+                      <option value="gpt-3.5">GPT-3.5 (Fast)</option>
+                      <option value="claude">Claude</option>
+                    </select>
+                    <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Card Count */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                    Cards: <span className="text-primary font-semibold">{cardCount}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="5"
+                    max="50"
+                    value={cardCount}
+                    onChange={(e) => setCardCount(Number(e.target.value))}
+                    className="w-full accent-primary h-1.5"
+                  />
+                  <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
+                    <span>5</span>
+                    <span>50</span>
+                  </div>
+                </div>
+
+                {/* Focus Area */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Focus</label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {["balanced", "definitions", "concepts", "details"].map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => setFocusArea(option)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize ${
+                          focusArea === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Generate Button */}
               <Button
                 onClick={handleGenerate}
-                disabled={isGenerating || (!text && !uploadedFile)}
-                className="w-full bg-foreground text-background hover:bg-foreground/90 py-6 text-lg"
+                disabled={isGenerating || !hasContent}
+                className="w-full mt-5 h-10"
               >
                 {isGenerating ? (
                   <>
-                    <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-5 h-5 mr-2" />
+                    <Sparkles className="w-4 h-4 mr-2" />
                     Generate Cards
                   </>
                 )}
               </Button>
             </div>
 
-            {/* Quick Tips */}
-            <div className="bg-secondary/30 rounded-xl p-4">
-              <p className="text-sm font-medium mb-2">💡 Tips</p>
-              <ul className="text-xs text-muted-foreground space-y-1 font-body">
-                <li>• More specific content = better cards</li>
-                <li>• Use "Definitions" for vocabulary-heavy text</li>
-                <li>• Longer documents may take more time</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+            {/* Generated Cards Preview */}
+            {generatedCards.length > 0 && (
+              <div className="flex-1 rounded-xl border border-border bg-card p-5 overflow-hidden flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-sm">
+                    {generatedCards.length} Cards
+                  </h3>
+                  <button
+                    onClick={clearContent}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Clear
+                  </button>
+                </div>
 
-        {/* Generated Cards */}
-        {generatedCards.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Generated Cards ({generatedCards.length})</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={clearContent} className="border-2">
-                  Clear All
-                </Button>
-                <Button onClick={handleExport} className="bg-primary hover:bg-primary/90">
+                <div className="flex-1 overflow-y-auto space-y-2 mb-4">
+                  {generatedCards.slice(0, 5).map((card, i) => (
+                    <div key={card.id} className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                      <div className="text-[10px] font-medium text-primary uppercase mb-1">Q{i + 1}</div>
+                      <p className="text-xs line-clamp-2">{card.front}</p>
+                    </div>
+                  ))}
+                  {generatedCards.length > 5 && (
+                    <p className="text-xs text-center text-muted-foreground py-2">
+                      +{generatedCards.length - 5} more
+                    </p>
+                  )}
+                </div>
+
+                <Button onClick={handleExport} className="w-full h-9" variant="outline">
                   <Download className="w-4 h-4 mr-2" />
-                  Export to Anki
+                  Export .apkg
                 </Button>
               </div>
-            </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {generatedCards.slice(0, 9).map((card) => (
-                <div key={card.id} className="card-soft p-4 space-y-3">
-                  <div>
-                    <span className="text-xs font-medium text-primary uppercase">Front</span>
-                    <p className="text-sm font-body mt-1">{card.front}</p>
-                  </div>
-                  <div className="h-px bg-border/20" />
-                  <div>
-                    <span className="text-xs font-medium text-muted-foreground uppercase">Back</span>
-                    <p className="text-sm text-muted-foreground font-body mt-1">{card.back}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {generatedCards.length > 9 && (
-              <p className="text-center text-sm text-muted-foreground mt-4">
-                + {generatedCards.length - 9} more cards in your deck
-              </p>
+            )}
+
+            {/* Tips - only show when no cards */}
+            {generatedCards.length === 0 && (
+              <div className="rounded-xl border border-border bg-muted/30 p-4">
+                <p className="text-xs font-medium mb-2">💡 Tips</p>
+                <ul className="text-[11px] text-muted-foreground space-y-1">
+                  <li>• More specific content = better cards</li>
+                  <li>• Use "Definitions" for vocabulary</li>
+                  <li>• Longer docs may take more time</li>
+                </ul>
+              </div>
             )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
