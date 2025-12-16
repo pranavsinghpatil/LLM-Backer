@@ -1,4 +1,4 @@
-import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap, Heart, Coffee } from "lucide-react";
+import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -9,9 +9,9 @@ const Hero = () => {
       {/* Hero Section */}
       <section className="container relative">
         {/* Decorative elements */}
-        <SparkleDecor className="absolute top-0 left-10 w-8 h-8 animate-float hidden md:block" color="text-accent" />
-        <StarDecor className="absolute top-20 right-20 w-6 h-6 animate-bounce-subtle hidden md:block" color="text-primary" />
-        <SparkleDecor className="absolute bottom-40 right-10 w-10 h-10 animate-float hidden md:block [animation-delay:1s]" color="text-primary" />
+        <Sparkles className="absolute top-0 left-10 w-8 h-8 text-accent opacity-40 hidden md:block" />
+        <Star className="absolute top-20 right-20 w-6 h-6 text-primary opacity-40 hidden md:block" />
+        <Sparkles className="absolute bottom-40 right-10 w-10 h-10 text-primary opacity-40 hidden md:block" />
 
         <div className="max-w-3xl mx-auto text-center py-16 md:py-24">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6">
@@ -155,8 +155,8 @@ const Hero = () => {
       <section id="pricing" className="container py-24">
         <div className="max-w-2xl mx-auto text-center">
           <div className="card-bordered p-12 relative">
-            <SparkleDecor className="absolute -top-4 -left-4 w-8 h-8" color="text-primary" />
-            <SparkleDecor className="absolute -bottom-4 -right-4 w-6 h-6" color="text-accent" />
+            <Sparkles className="absolute -top-4 -left-4 w-8 h-8 text-primary opacity-40" />
+            <Sparkles className="absolute -bottom-4 -right-4 w-6 h-6 text-accent opacity-40" />
             
             <div className="inline-flex items-center gap-2 bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium text-secondary-foreground mb-6">
               <Zap className="w-4 h-4" />
