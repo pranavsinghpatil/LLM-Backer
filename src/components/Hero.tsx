@@ -1,74 +1,112 @@
-import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap, Sparkles, Star } from "lucide-react";
+import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const Hero = () => {
+// Sparkle decoration component matching gitingest style
+const SparkleDecor = ({ className, color = "primary" }: { className?: string; color?: "primary" | "accent" | "red" | "green" }) => {
+  const colors = {
+    primary: "text-primary",
+    accent: "text-accent", 
+    red: "text-red-400",
+    green: "text-green-400"
+  };
+  return (
+    <svg className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+    </svg>
+  );
+};
 
+const Hero = () => {
   return (
     <div className="pt-24 pb-16">
       {/* Hero Section */}
       <section className="container relative">
-        {/* Decorative elements */}
-        <Sparkles className="absolute top-0 left-10 w-8 h-8 text-accent opacity-40 hidden md:block" />
-        <Star className="absolute top-20 right-20 w-6 h-6 text-primary opacity-40 hidden md:block" />
-        <Sparkles className="absolute bottom-40 right-10 w-10 h-10 text-primary opacity-40 hidden md:block" />
-
-        <div className="max-w-3xl mx-auto text-center py-16 md:py-24">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            Turn <span className="text-primary">Anything</span> into
-            <br />Anki Decks
+        <div className="max-w-3xl mx-auto text-center py-12 md:py-20 relative">
+          {/* Decorative sparkles like gitingest */}
+          <SparkleDecor className="absolute -top-4 left-0 md:left-20 w-8 h-8 hidden md:block" color="red" />
+          <SparkleDecor className="absolute top-8 left-8 md:left-32 w-4 h-4 hidden md:block" color="green" />
+          <SparkleDecor className="absolute top-0 right-0 md:right-16 w-6 h-6 hidden md:block" color="green" />
+          <SparkleDecor className="absolute top-12 right-4 md:right-24 w-3 h-3 hidden md:block" color="primary" />
+          
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
+            <span className="text-primary">AI-Powered</span>
+            <br />Flashcard Generator
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto font-body">
-            Upload PDFs, paste notes, or drop any text. AI generates high-quality flashcards so you can study smarter, not harder.
+            Turn any PDF, notes, or text into Anki-ready flashcards.
+            <br className="hidden sm:block" />
+            This is useful for studying smarter, not harder.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link to="/studio">
-              <Button 
-                size="lg"
-                className="bg-foreground text-background hover:bg-foreground/90 text-lg px-8 py-6 rounded-xl"
-              >
-                Get Started Free
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            <Link to="/feedback" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-              Give Feedback →
-            </Link>
-          </div>
         </div>
 
-        {/* Main Card Preview */}
-        <div className="max-w-2xl mx-auto">
-          <div className="card-bordered p-6 relative">
-            {/* Badge */}
-            <span className="badge-new absolute -top-3 left-6">NEW</span>
-            
-            <div className="flex items-center gap-3 mb-4">
+        {/* Main Card - gitingest style */}
+        <div className="max-w-3xl mx-auto relative">
+          {/* Decorative sparkle */}
+          <SparkleDecor className="absolute -bottom-8 -left-8 w-12 h-12 hidden md:block" color="green" />
+          
+          <div className="bg-secondary/80 rounded-2xl border-2 border-foreground p-6 md:p-8 shadow-[4px_4px_0_0_hsl(var(--foreground))]">
+            {/* Input row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
               <input 
                 type="text" 
-                placeholder="Paste your notes or upload a PDF..."
-                className="flex-1 bg-secondary/50 border-2 border-foreground rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Paste your notes or drop a PDF..."
+                className="flex-1 bg-accent/30 border-2 border-foreground rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-muted-foreground"
                 readOnly
               />
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6">
-                Generate
-              </Button>
+              <Link to="/studio">
+                <Button className="bg-foreground text-background hover:bg-foreground/90 px-6 py-3 rounded-lg font-medium w-full sm:w-auto">
+                  Generate
+                </Button>
+              </Link>
             </div>
             
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="text-sm text-muted-foreground">Try:</span>
-              {["Biology Notes", "History Chapter", "Medical Terms", "Law Cases"].map((item) => (
-                <button key={item} className="px-3 py-1 rounded-full border border-foreground/20 text-sm hover:bg-secondary transition-colors">
-                  {item}
-                </button>
+            {/* Controls row */}
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <select className="bg-background border-2 border-foreground rounded-md px-3 py-1.5 text-sm font-medium cursor-pointer focus:outline-none">
+                  <option>GPT-4</option>
+                  <option>Claude</option>
+                </select>
+                <input 
+                  type="text" 
+                  placeholder="Focus: definitions, concepts..."
+                  className="bg-background border-2 border-foreground rounded-md px-3 py-1.5 text-sm w-40 focus:outline-none"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">Cards:</span>
+                <span className="font-bold">10</span>
+                <input type="range" min="5" max="50" defaultValue="10" className="w-24 accent-primary" />
+              </div>
+              
+              <div className="flex items-center gap-2 ml-auto">
+                <input type="checkbox" id="advanced" className="w-4 h-4 accent-primary border-2 border-foreground rounded" />
+                <label htmlFor="advanced" className="text-sm font-medium flex items-center gap-1">
+                  Advanced
+                  <span className="badge-new text-[10px] px-1.5 py-0.5">NEW</span>
+                </label>
+              </div>
+            </div>
+            
+            {/* Example tags */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-muted-foreground">Try these:</span>
+              {["Biology Notes", "Medical Terms", "History Chapter", "Law Cases", "Vocab List"].map((item) => (
+                <Link to="/studio" key={item}>
+                  <button className="px-3 py-1.5 rounded-full border-2 border-foreground/30 text-sm font-medium hover:bg-foreground hover:text-background transition-colors">
+                    {item}
+                  </button>
+                </Link>
               ))}
             </div>
-            
-            <p className="text-xs text-muted-foreground text-center">
-              Supports PDF, TXT, DOCX • Max 50MB
-            </p>
           </div>
+          
+          {/* Tip below card */}
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            Supports PDF, TXT, DOCX • Max 50MB • Export to .apkg
+          </p>
         </div>
       </section>
 
@@ -77,34 +115,34 @@ const Hero = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
           <p className="text-muted-foreground max-w-lg mx-auto font-body">
-            Three simple steps to transform your study materials into effective flashcards
+            Three simple steps to transform your study materials
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {[
             {
               icon: FileText,
-              title: "1. Upload Content",
-              description: "Drop a PDF, paste text, or upload any document. We handle the parsing."
+              title: "1. Upload",
+              description: "Drop a PDF, paste text, or upload any document."
             },
             {
               icon: Brain,
-              title: "2. AI Generates Cards",
-              description: "Our AI analyzes content and creates question-answer pairs optimized for retention."
+              title: "2. Generate",
+              description: "AI creates Q&A pairs optimized for spaced repetition."
             },
             {
               icon: Download,
-              title: "3. Export to Anki",
-              description: "Download your deck as .apkg and import directly into Anki. Ready to study!"
+              title: "3. Export",
+              description: "Download as .apkg and import directly into Anki."
             }
           ].map((feature, index) => (
-            <div key={index} className="card-soft p-8 hover-lift">
-              <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-6">
-                <feature.icon className="w-7 h-7 text-secondary-foreground" />
+            <div key={index} className="bg-secondary/50 border-2 border-foreground rounded-2xl p-6 shadow-[3px_3px_0_0_hsl(var(--foreground))] hover:-translate-y-1 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-background border-2 border-foreground flex items-center justify-center mb-4">
+                <feature.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-              <p className="text-muted-foreground font-body">{feature.description}</p>
+              <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+              <p className="text-muted-foreground text-sm font-body">{feature.description}</p>
             </div>
           ))}
         </div>
@@ -115,37 +153,21 @@ const Hero = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Built for Learners</h2>
           <p className="text-muted-foreground max-w-lg mx-auto font-body">
-            Whether you're studying for exams or mastering new skills, MeshCards helps you learn faster
+            Perfect for anyone using spaced repetition to learn
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {[
-            {
-              icon: Microscope,
-              title: "Med Students",
-              description: "Master anatomy, pharmacology, and pathology with AI-generated flashcards from your textbooks."
-            },
-            {
-              icon: GraduationCap,
-              title: "Bio Students", 
-              description: "Turn complex biology concepts into memorable Q&A pairs for better exam prep."
-            },
-            {
-              icon: BookOpen,
-              title: "Law Students",
-              description: "Convert case briefs and statutes into study-ready flashcards automatically."
-            },
-            {
-              icon: Briefcase,
-              title: "Professionals",
-              description: "Stay sharp with certifications, new skills, and continuous learning materials."
-            }
+            { icon: Microscope, title: "Med Students", description: "Anatomy, pharmacology, pathology" },
+            { icon: GraduationCap, title: "Students", description: "Exam prep, lectures, textbooks" },
+            { icon: BookOpen, title: "Law Students", description: "Case briefs, statutes, terms" },
+            { icon: Briefcase, title: "Professionals", description: "Certifications, skills, training" }
           ].map((item, index) => (
-            <div key={index} className="p-6 rounded-2xl border border-border/20 hover:border-primary/50 transition-colors bg-card/50">
-              <item.icon className="w-10 h-10 text-primary mb-4" />
-              <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground font-body">{item.description}</p>
+            <div key={index} className="p-5 rounded-xl border-2 border-foreground/20 hover:border-foreground transition-colors bg-card">
+              <item.icon className="w-8 h-8 text-primary mb-3" />
+              <h3 className="font-bold mb-1">{item.title}</h3>
+              <p className="text-xs text-muted-foreground font-body">{item.description}</p>
             </div>
           ))}
         </div>
@@ -153,38 +175,34 @@ const Hero = () => {
 
       {/* Pricing Section */}
       <section id="pricing" className="container py-24">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="card-bordered p-12 relative">
-            <Sparkles className="absolute -top-4 -left-4 w-8 h-8 text-primary opacity-40" />
-            <Sparkles className="absolute -bottom-4 -right-4 w-6 h-6 text-accent opacity-40" />
+        <div className="max-w-xl mx-auto text-center">
+          <div className="bg-secondary/80 border-2 border-foreground rounded-2xl p-8 md:p-12 shadow-[4px_4px_0_0_hsl(var(--foreground))] relative">
+            <SparkleDecor className="absolute -top-4 -left-4 w-8 h-8" color="red" />
+            <SparkleDecor className="absolute -bottom-4 -right-4 w-6 h-6" color="green" />
             
-            <div className="inline-flex items-center gap-2 bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium text-secondary-foreground mb-6">
+            <div className="inline-flex items-center gap-2 bg-foreground text-background px-3 py-1 rounded-full text-sm font-bold mb-6">
               <Zap className="w-4 h-4" />
               Coming Soon
             </div>
             
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Pricing</h2>
-            <p className="text-muted-foreground mb-8 font-body">
-              We're working on making MeshCards accessible to everyone. Right now, it's completely free to use while we build and improve the platform.
+            <h2 className="text-3xl font-bold mb-4">Pricing</h2>
+            <p className="text-muted-foreground mb-6 font-body text-sm">
+              Free during early access. Support development if you find it useful!
             </p>
             
-            <div className="bg-secondary/50 rounded-xl p-6 mb-8">
-              <div className="text-4xl font-bold text-primary mb-2">Free</div>
-              <p className="text-sm text-muted-foreground">During early access</p>
+            <div className="bg-background border-2 border-foreground rounded-xl p-6 mb-6">
+              <div className="text-4xl font-bold text-primary mb-1">$0</div>
+              <p className="text-sm text-muted-foreground">Early Access</p>
             </div>
             
-            <p className="text-sm text-muted-foreground font-body">
-              Love MeshCards? Support development through{" "}
-              <a 
-                href="https://buymeacoffee.com/htclodkzgo" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:underline font-medium"
-              >
-                Buy Me a Coffee
-              </a>{" "}
-              ☕
-            </p>
+            <a 
+              href="https://buymeacoffee.com/htclodkzgo" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-lg font-medium hover:bg-foreground/90 transition-colors"
+            >
+              ☕ Buy Me a Coffee
+            </a>
           </div>
         </div>
       </section>
