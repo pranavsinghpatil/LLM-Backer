@@ -146,6 +146,18 @@
     @apply card-clean transition-all duration-200 hover:border-primary/30 hover:shadow-lg;
   }
 
+  .card-bordered {
+    @apply bg-card rounded-2xl border-2 border-foreground p-6;
+  }
+
+  .card-soft {
+    @apply bg-secondary/30 rounded-2xl border border-border/50;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+  }
+
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
@@ -189,6 +201,10 @@
 
   .badge-primary {
     @apply badge bg-primary/10 text-primary;
+  }
+
+  .badge-new {
+    @apply inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-primary text-primary-foreground;
   }
 }
 
