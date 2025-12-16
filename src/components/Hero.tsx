@@ -1,36 +1,8 @@
-import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap } from "lucide-react";
+import { ArrowRight, FileText, Brain, Download, GraduationCap, Microscope, BookOpen, Briefcase, Zap, Heart, Coffee } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-interface HeroProps {
-  user?: { email: string } | null;
-  onSignIn?: () => void;
-}
-
-// Sparkle decoration component
-const SparkleDecor = ({ className, color = "text-accent" }: { className?: string; color?: string }) => (
-  <svg className={`${className} ${color}`} width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-    <path d="M16 0L18.5 13.5L32 16L18.5 18.5L16 32L13.5 18.5L0 16L13.5 13.5L16 0Z" />
-  </svg>
-);
-
-// Star decoration
-const StarDecor = ({ className, color = "text-primary" }: { className?: string; color?: string }) => (
-  <svg className={`${className} ${color}`} width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-  </svg>
-);
-
-const Hero = ({ user, onSignIn }: HeroProps) => {
-  const navigate = useNavigate();
-
-  const handleGetStarted = () => {
-    if (user) {
-      navigate("/studio");
-    } else {
-      onSignIn?.();
-    }
-  };
+const Hero = () => {
 
   return (
     <div className="pt-24 pb-16">
@@ -51,17 +23,18 @@ const Hero = ({ user, onSignIn }: HeroProps) => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              onClick={handleGetStarted}
-              size="lg"
-              className="bg-foreground text-background hover:bg-foreground/90 text-lg px-8 py-6 rounded-xl"
-            >
-              {user ? "Open Studio" : "Get Started Free"}
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-              See how it works →
-            </a>
+            <Link to="/studio">
+              <Button 
+                size="lg"
+                className="bg-foreground text-background hover:bg-foreground/90 text-lg px-8 py-6 rounded-xl"
+              >
+                Get Started Free
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/feedback" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+              Give Feedback →
+            </Link>
           </div>
         </div>
 
