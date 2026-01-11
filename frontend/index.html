@@ -173,6 +173,40 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             border: 1px solid var(--border-glass);
+            position: relative;
+            cursor: help;
+        }
+
+        /* Tooltip */
+        .status-pill::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(17, 24, 39, 0.95);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            max-width: 300px;
+            white-space: normal;
+            line-height: 1.4;
+        }
+
+        .status-pill:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         .status-dot {
@@ -381,6 +415,25 @@
         .connect-btn span {
             position: relative;
             z-index: 1;
+        }
+
+        .connect-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .connect-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .social-mentions {
@@ -828,7 +881,7 @@
                 </a>
                 <a href="https://prnav.me" target="_blank"><i class="fas fa-globe"></i></a>
             </div>
-            <div class="status-pill">
+            <div class="status-pill" id="status-pill" data-tooltip="Initializing connection...">
                 <div id="status-dot" class="status-dot"></div>
                 <span id="status-text">Handshaking...</span>
             </div>
@@ -902,6 +955,15 @@
         function connect() {
             sessionId = generateUUID();
 
+            // Show loading state on button
+            const connectBtn = document.querySelector('.connect-btn');
+            const btnIcon = connectBtn.querySelector('i');
+            const btnText = connectBtn.querySelector('span');
+
+            connectBtn.classList.add('loading');
+            btnIcon.className = 'fas fa-spinner';
+            btnText.textContent = 'Connecting...';
+
             // Determine WebSocket protocol based on current page protocol
             const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const host = window.location.host; // includes port if present
@@ -913,14 +975,23 @@
             socket = new WebSocket(wsUrl);
 
             socket.onopen = () => {
+                // Update status
                 statusDot.classList.add('connected');
                 statusText.innerText = `SESSION ACTIVE`;
+
+                // Update tooltip with session info
+                const statusPill = document.getElementById('status-pill');
+                const shortId = sessionId.substring(0, 8);
+                statusPill.setAttribute('data-tooltip', `Session ID: ${shortId}...\n⚠️ Refreshing the page will create a new session`);
+
+                // Hide overlay
                 overlay.classList.add('hidden');
 
                 // Switch Header Mode (Smooth Fade)
                 headerCenter.classList.add('visible');
                 headerSocials.classList.add('visible');
 
+                // Enable input
                 userInput.disabled = false;
                 sendBtn.disabled = false;
                 userInput.focus();
