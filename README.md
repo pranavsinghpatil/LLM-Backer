@@ -8,7 +8,7 @@ A production-grade, real-time AI conversation system built with FastAPI and WebS
 
 ![LLM-Backer Interface](docs/home.png)
 
-### 🌐 [**Live Demo**](https://llm-backer.leapcell.app/)
+### ==>🌐 [**Live Site**](https://llm-backer.leapcell.app/) <==
 
 **Note:** The live deployment is currently running on a small-scale infrastructure and may occasionally experience performance issues or downtime. For the best experience and full feature exploration, we recommend running the project locally using the [Quick Start](#-quick-start) guide below.
 
