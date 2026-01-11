@@ -42,7 +42,7 @@ async def serve_frontend():
 async def health():
     return {"message": "Server is up and running!"}
 
-# Leapcell health check endpoints (they check both spellings due to internal typo)
+# Leapcell health check endpoints (deployment verification stuff....)
 @app.get("/kaithheathcheck")
 @app.get("/kaithhealthcheck")
 async def leapcell_health():

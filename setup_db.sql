@@ -1,4 +1,3 @@
--- RUN THIS IN YOUR SUPABASE SQL EDITOR
 
 -- 1. Create a table for sessions
 CREATE TABLE IF NOT EXISTS sessions (
@@ -15,11 +14,8 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS event_logs (
     id BIGSERIAL PRIMARY KEY,
     session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
-    event_type TEXT NOT NULL, -- e.g., 'user_message', 'ai_response', 'tool_call', 'tool_result'
+    event_type TEXT NOT NULL, 
     content JSONB NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 3. (Optional) Enable Realtime for these tables
--- ALTER PUBLICATION supabase_realtime ADD TABLE sessions;
--- ALTER PUBLICATION supabase_realtime ADD TABLE event_logs;
