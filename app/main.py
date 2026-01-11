@@ -16,7 +16,6 @@ import os
 
 app = FastAPI(title="Realtime AI Backend")
 
-# 🛡️ Security: Add CORS middleware so our frontend can talk to us
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # In production, replace with your frontend URL
@@ -25,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 📝 Logging: Simple middleware to track request time
 @app.middleware("http")
 async def add_process_time_header(request, call_next):
     start_time = time.time()
@@ -44,10 +42,12 @@ async def serve_frontend():
 async def health():
     return {"message": "Server is up and running!"}
 
-# We keep a simple in-memory history for now
-# Potential Doubt: "Why not store history in DB?"
-# Answer: We DO store it in DB for auditing, but the LLM needs the recent history
-# sent with every request. In-memory is fast for a single session.
+# Leapcell health check endpoints (they check both spellings due to internal typo)
+@app.get("/kaithheathcheck")
+@app.get("/kaithhealthcheck")
+async def leapcell_health():
+    return {"status": "healthy", "service": "llm-backer"}
+
 history = {}
 
 @app.websocket("/ws/session/{session_id}")
