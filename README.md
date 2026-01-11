@@ -4,6 +4,16 @@
 
 A production-grade, real-time AI conversation system built with FastAPI and WebSockets, featuring automatic session auditing, tool execution, and intelligent post-session automation. LLM-Backer provides a robust backend infrastructure for building stateful LLM applications with complete conversation persistence and analytics.
 
+<div align="center">
+
+![LLM-Backer Interface](docs/home.png)
+
+### 🌐 [**Live Demo**](https://llm-backer.leapcell.app/)
+
+**Note:** The live deployment is currently running on a small-scale infrastructure and may occasionally experience performance issues or downtime. For the best experience and full feature exploration, we recommend running the project locally using the [Quick Start](#-quick-start) guide below.
+
+</div>
+
 ---
 
 ## ✨ Key Features

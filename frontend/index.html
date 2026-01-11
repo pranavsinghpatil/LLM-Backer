@@ -209,6 +209,13 @@
             transform: translateY(0);
         }
 
+        /* Auto-show tooltip */
+        .status-pill.show-tooltip::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
         .status-dot {
             width: 6px;
             height: 6px;
@@ -831,7 +838,7 @@
 
             <button class="connect-btn" onclick="connect()">
                 <i class="fas fa-plug"></i>
-                <span>Initialize Session</span>
+                <span>New Session</span>
             </button>
 
             <div class="social-mentions">
@@ -962,7 +969,7 @@
 
             connectBtn.classList.add('loading');
             btnIcon.className = 'fas fa-spinner';
-            btnText.textContent = 'Connecting...';
+            btnText.textContent = 'Initiating...';
 
             // Determine WebSocket protocol based on current page protocol
             const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -982,7 +989,13 @@
                 // Update tooltip with session info
                 const statusPill = document.getElementById('status-pill');
                 const shortId = sessionId.substring(0, 8);
-                statusPill.setAttribute('data-tooltip', `Session ID: ${shortId}...\n⚠️ Refreshing the page will create a new session`);
+                statusPill.setAttribute('data-tooltip', `ID: ${shortId}...\n Refreshing the page will create a new session`);
+
+                // Auto-show tooltip for 15 seconds
+                statusPill.classList.add('show-tooltip');
+                setTimeout(() => {
+                    statusPill.classList.remove('show-tooltip');
+                }, 15000);
 
                 // Hide overlay
                 overlay.classList.add('hidden');
