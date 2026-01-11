@@ -43,7 +43,7 @@ async def start_client():
                         break
     except Exception as e:
         print(f"\nError: {e}")
-        print("Tip: Is the server running? Use 'uvicorn app.main:app --reload'")
+        print("backend error: 'uvicorn app.main:app --reload'")
 
 if __name__ == "__main__":
     asyncio.run(start_client())
