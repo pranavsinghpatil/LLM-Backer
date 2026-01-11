@@ -901,8 +901,16 @@
 
         function connect() {
             sessionId = generateUUID();
-            const host = window.location.hostname || 'localhost';
-            socket = new WebSocket(`ws://${host}:8000/ws/session/${sessionId}`);
+
+            // Determine WebSocket protocol based on current page protocol
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.host; // includes port if present
+
+            // Build WebSocket URL
+            const wsUrl = `${wsProtocol}//${host}/ws/session/${sessionId}`;
+            console.log('Connecting to:', wsUrl);
+
+            socket = new WebSocket(wsUrl);
 
             socket.onopen = () => {
                 statusDot.classList.add('connected');
