@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+supabase
+python-dotenv
+openai
+pydantic
+pydantic-settings
+websockets
+pytest
+pytest-asyncio
+httpx

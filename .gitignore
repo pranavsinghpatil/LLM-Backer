@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
+
+# Project Specific Documentation (Excluding the 'why' docs)
+docs/02_FastAPI_The_Engine.md
+docs/03_WebSockets_Realtime_Magic.md
+docs/04_LLM_Streaming_Explained.md
+docs/05_Function_Calling.md
+docs/06_Supabase_The_Memory.md
+docs/07_Async_Python.md
+docs/08_Automation.md
+docs/09_Best_Practices.md
+docs/10_Testing.md
+
+# OS files
+.DS_Store
+Thumbs.db
